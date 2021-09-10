@@ -90,8 +90,6 @@ import com.oracle.svm.util.ModuleSupport;
 
 public class NativeImage {
 
-    private static final String ENV_VAR_USE_MODULE_SYSTEM = "USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM";
-
     private static final String DEFAULT_GENERATOR_CLASS_NAME = NativeImageGeneratorRunner.class.getName();
     private static final String DEFAULT_GENERATOR_MODULE_NAME = ModuleSupport.getModuleName(NativeImageGeneratorRunner.class);
 
@@ -279,7 +277,7 @@ public class NativeImage {
 
         @SuppressWarnings("deprecation")
         BuildConfiguration(Path rootDir, Path workDir, List<String> args) {
-            modulePathBuild = Boolean.parseBoolean(System.getenv().get(ENV_VAR_USE_MODULE_SYSTEM));
+            modulePathBuild = Boolean.parseBoolean(System.getenv().get(ModuleSupport.ENV_VAR_USE_MODULE_SYSTEM));
             this.args = args;
             this.workDir = workDir != null ? workDir : Paths.get(".").toAbsolutePath().normalize();
             if (rootDir != null) {
@@ -1385,7 +1383,7 @@ public class NativeImage {
             ProcessBuilder pb = new ProcessBuilder();
             pb.command(command);
             if (config.modulePathBuild) {
-                pb.environment().put(ENV_VAR_USE_MODULE_SYSTEM, Boolean.toString(true));
+                pb.environment().put(ModuleSupport.ENV_VAR_USE_MODULE_SYSTEM, Boolean.toString(true));
             }
             p = pb.inheritIO().start();
             exitStatus = p.waitFor();
