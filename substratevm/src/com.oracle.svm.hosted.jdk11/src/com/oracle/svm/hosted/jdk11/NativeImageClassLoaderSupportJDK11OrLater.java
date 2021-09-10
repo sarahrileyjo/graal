@@ -76,8 +76,6 @@ public class NativeImageClassLoaderSupportJDK11OrLater extends AbstractNativeIma
         adjustBootLayerQualifiedExports(moduleLayer);
         moduleLayerForImageBuild = moduleLayer;
         classLoader = getSingleClassloader(moduleLayer);
-
-        adjustLibrarySupportReadAllUnnamed();
     }
 
     private static ModuleLayer createModuleLayer(Path[] modulePaths, ClassLoader parent) {
@@ -170,7 +168,7 @@ public class NativeImageClassLoaderSupportJDK11OrLater extends AbstractNativeIma
     }
 
     @Override
-    protected void processAddExportsAndAddOpens(OptionValues parsedHostedOptions) {
+    protected void processClassLoaderOptions(OptionValues parsedHostedOptions) {
         LocatableMultiOptionValue.Strings addExports = NativeImageClassLoaderOptions.AddExports.getValue(parsedHostedOptions);
         addExports.getValuesWithOrigins().map(this::asAddExportsAndOpensFormatValue).forEach(val -> {
             if (val.targetModules.isEmpty()) {
@@ -191,6 +189,9 @@ public class NativeImageClassLoaderSupportJDK11OrLater extends AbstractNativeIma
                 }
             }
         });
+
+        /* TODO: Implement real --add-reads instead */
+        adjustLibrarySupportReadAllUnnamed();
     }
 
     private static final class AddExportsAndOpensFormatValue {
