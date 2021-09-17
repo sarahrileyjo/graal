@@ -45,18 +45,29 @@ final class Timer implements AutoCloseable {
     }
 
     public Timer open() {
-        openNanos = System.nanoTime();
+        return openAt(System.nanoTime());
+    }
+
+    Timer openAt(long nanoTime) {
+        assert nanoTime > 0;
+        openNanos = nanoTime;
         closeNanos = 0L;
         return this;
     }
 
     @Override
     public void close() {
+        closeAt(System.nanoTime());
+    }
+
+    void closeAt(long nanoTime) {
+        assert nanoTime > 0;
+        assert nanoTime >= openNanos;
         /* If a timer was not opened, pretend it was opened at the start of the VM. */
         if (openNanos == 0L) {
             openNanos = HeapImpl.getChunkProvider().getFirstAllocationTime();
         }
-        closeNanos = System.nanoTime();
+        closeNanos = nanoTime;
         collectedNanos += closeNanos - openNanos;
     }
 

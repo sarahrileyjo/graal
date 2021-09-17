@@ -379,9 +379,9 @@ final class AdaptiveCollectionPolicy extends AbstractCollectionPolicy {
     }
 
     @Override
-    public void onCollectionBegin(boolean completeCollection) { // {major,minor}_collection_begin
+    public void onCollectionBegin(boolean completeCollection, long requestingNanoTime) { // {major,minor}_collection_begin
         Timer timer = completeCollection ? majorTimer : minorTimer;
-        timer.close();
+        timer.closeAt(requestingNanoTime);
         if (completeCollection) {
             latestMajorMutatorIntervalNanos = timer.getMeasuredNanos();
         } else {
