@@ -96,7 +96,7 @@ abstract class AbstractCollectionPolicy implements CollectionPolicy {
 
     @Fold
     static UnsignedWord minSpaceSize() {
-        return HeapParameters.getAlignedHeapChunkSize();
+        return HeapParameters.getAlignedHeapChunkSize().multiply(8);
     }
 
     @Uninterruptible(reason = "Used in uninterruptible code.", mayBeInlined = true)
@@ -319,7 +319,10 @@ abstract class AbstractCollectionPolicy implements CollectionPolicy {
              */
             initialSurvivor = minSpaceSize(alignUp(initialYoung.unsignedDivide(AbstractCollectionPolicy.INITIAL_SURVIVOR_RATIO)));
         }
-        UnsignedWord initialEden = minSpaceSize(alignUp(initialYoung.subtract(initialSurvivor.multiply(2))));
+        UnsignedWord initialEden = minSpaceSize();
+        if (initialYoung.aboveThan(initialSurvivor.multiply(2))) {
+            initialEden = minSpaceSize(alignUp(initialYoung.subtract(initialSurvivor.multiply(2))));
+        }
 
         return new SizeParameters(maxHeap, maxYoung, initialHeap, initialEden, initialSurvivor, minHeap);
     }
