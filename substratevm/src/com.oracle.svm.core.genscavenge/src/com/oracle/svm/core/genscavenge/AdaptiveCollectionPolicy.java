@@ -105,7 +105,7 @@ final class AdaptiveCollectionPolicy extends AbstractCollectionPolicy {
      * When the GC cost of a generation is above this value, its estimator is ignored and sizes are
      * increased to avoid starving the mutator.
      */
-    private static final double ADAPTIVE_SIZE_COST_ESTIMATOR_GC_COST_LIMIT = 0.5;
+    private static final double ADAPTIVE_SIZE_COST_ESTIMATOR_GC_COST_LIMIT = 0.52;
 
     /* Constants derived from other constants. */
     private static final double THROUGHPUT_GOAL = 1.0 - 1.0 / (1.0 + GC_TIME_RATIO);
