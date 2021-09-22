@@ -33,6 +33,7 @@ import org.graalvm.word.WordFactory;
 import com.oracle.svm.core.heap.HeapSizeVerifier;
 import com.oracle.svm.core.option.HostedOptionKey;
 import com.oracle.svm.core.option.RuntimeOptionKey;
+import com.oracle.svm.core.util.UserError;
 
 /**
  * Garbage collection-specific options that are supported by all garbage collectors.
@@ -80,6 +81,14 @@ public class SubstrateGCOptions {
             if (!SubstrateUtil.HOSTED) {
                 HeapSizeVerifier.verifyMaxNewSizeAgainstAddressSpace(WordFactory.unsigned(newValue));
             }
+        }
+    };
+
+    @Option(help = "The maximum free bytes reserved for allocations, in bytes (0 for no limit).", type = OptionType.User)//
+    public static final RuntimeOptionKey<Long> MaxHeapFree = new RuntimeOptionKey<Long>(0L) {
+        @Override
+        protected void onValueUpdate(EconomicMap<OptionKey<?>, Object> values, Long oldValue, Long newValue) {
+            UserError.guarantee(newValue >= 0, "MaxHeapFree must be positive (or 0 for no limit).");
         }
     };
 }
