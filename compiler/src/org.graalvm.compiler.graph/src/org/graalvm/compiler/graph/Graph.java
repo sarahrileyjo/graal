@@ -517,7 +517,7 @@ public class Graph {
         @Override
         public Node apply(Node self, Node input) {
             if (!input.isAlive()) {
-                assert !input.isDeleted();
+                assert !input.isDeleted() : input;
                 return addOrUniqueWithInputs(input);
             } else {
                 return input;
